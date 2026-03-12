@@ -7,9 +7,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DashboardController {
 
-    @GetMapping("/dashboard/health")
-    public String healthCheck() {
-        return "Dashboard API Running";
-    }
 
 }
