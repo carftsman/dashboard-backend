@@ -35,6 +35,8 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/swagger-ui.html"
                 ).permitAll()
+                // allow dashboard APIs
+                .requestMatchers("/dashboards/**").permitAll()
                 .anyRequest().authenticated()
             )
 
