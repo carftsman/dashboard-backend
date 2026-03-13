@@ -1,3 +1,6 @@
+dotenv:
+  enabled: true
+
 spring:
   datasource:
     url: ${DB_URL}
@@ -11,8 +14,11 @@ spring:
     show-sql: true
 
 server:
-  port: ${SERVER_PORT}
+  port: ${PORT:8080}
 
 springdoc:
+  api-docs:
+    path: /v3/api-docs
   swagger-ui:
     path: /api-docs
+    disable-swagger-default-url: true

@@ -27,7 +27,7 @@ public class AuthController {
         return authService.login(request);
     }
 
-    @GetMapping("/getprofile")
+    @GetMapping("/getproFile")
     public UserResponse getCurrentUser(Authentication authentication) {
 
         String email = authentication.getName();
