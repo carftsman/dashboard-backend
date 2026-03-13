@@ -1,9 +1,10 @@
 package com.dhatvibs.dashboard.repository;
 
-import com.dhatvibs.dashboard.entity.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.dhatvibs.dashboard.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 

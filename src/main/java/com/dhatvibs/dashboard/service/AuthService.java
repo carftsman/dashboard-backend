@@ -1,12 +1,14 @@
 package com.dhatvibs.dashboard.service;
 
+import org.springframework.stereotype.Service;
+
 import com.dhatvibs.dashboard.dto.LoginRequest;
 import com.dhatvibs.dashboard.dto.LoginResponse;
 import com.dhatvibs.dashboard.entity.User;
 import com.dhatvibs.dashboard.repository.UserRepository;
 import com.dhatvibs.dashboard.util.JwtService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

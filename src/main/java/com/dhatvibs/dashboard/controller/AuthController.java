@@ -1,5 +1,12 @@
 package com.dhatvibs.dashboard.controller;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dhatvibs.dashboard.dto.LoginRequest;
 import com.dhatvibs.dashboard.dto.LoginResponse;
 import com.dhatvibs.dashboard.dto.UserResponse;
@@ -9,9 +16,6 @@ import com.dhatvibs.dashboard.service.AuthService;
 import com.dhatvibs.dashboard.util.JwtService;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
