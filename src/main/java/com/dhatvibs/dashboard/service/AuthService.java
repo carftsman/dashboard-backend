@@ -27,11 +27,16 @@ public class AuthService {
             throw new LoginException("Invalid password");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String role = user.getRole().name();   // IMPORTANT
+
+        String token = jwtService.generateToken(
+                user.getEmail(),
+                role
+        );
 
         return new LoginResponse(
                 token,
-                user.getRole().name(),
+                role,
                 user.getEmail()
         );
     }
