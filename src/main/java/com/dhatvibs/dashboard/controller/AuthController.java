@@ -1,38 +1,29 @@
 package com.dhatvibs.dashboard.controller;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.dhatvibs.dashboard.dto.EditProfileDTO;
 import com.dhatvibs.dashboard.dto.LoginRequest;
 import com.dhatvibs.dashboard.dto.LoginResponse;
 import com.dhatvibs.dashboard.dto.UserResponse;
 import com.dhatvibs.dashboard.entity.User;
 import com.dhatvibs.dashboard.repository.UserRepository;
 import com.dhatvibs.dashboard.service.AuthService;
+import com.dhatvibs.dashboard.service.EditProfileService;
+import com.dhatvibs.dashboard.service.ForgotPasswordService;
 import com.dhatvibs.dashboard.util.JwtService;
 
 import lombok.RequiredArgsConstructor;
-
-
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import com.dhatvibs.dashboard.dto.EditProfileDTO;
-import com.dhatvibs.dashboard.service.EditProfileService;
-import com.dhatvibs.dashboard.service.ForgotPasswordService;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-    private final EditProfileService editProfileService;
-    private final ForgotPasswordService forgotPasswordService;
+	private final AuthService authService;
+	private final JwtService jwtService;
+	private final UserRepository userRepository;
+	private final EditProfileService editProfileService;
+	private final ForgotPasswordService forgotPasswordService;
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
@@ -54,8 +45,9 @@ public class AuthController {
         response.setProfilePicture(user.getProfilePicture());
         response.setTwoFactorEnabled(user.getTwoFactorEnabled());
 
-        return response;       
+        return response;
     }
+
     
     @PatchMapping("/edit-profile")
     public UserResponse editProfile(Authentication authentication,
