@@ -3,13 +3,9 @@ package com.dhatvibs.dashboard.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dhatvibs.dashboard.dto.DatasetRequest;
-import com.dhatvibs.dashboard.dto.ExtractColumnsRequest;
 import com.dhatvibs.dashboard.dto.PreviewRequest;
 import com.dhatvibs.dashboard.dto.SaveMappingRequest;
 import com.dhatvibs.dashboard.service.DatasetService;
@@ -25,13 +21,25 @@ public class DatasetController {
     private final FileParsingService fileParsingService;
     private final DatasetService datasetService;
 
+    // ===============================
+    // EXTRACT COLUMNS
+    // ===============================
     @PostMapping("/extract-columns")
     public Map<String,Object> extractColumns(@RequestBody DatasetRequest request) throws Exception {
 
-        return datasetService.extractColumns(request.getDatasetId());
+        List<String> columns =
+                datasetService.extractColumns(request.getDatasetId());
 
+        return Map.of(
+                "status","success",
+                "datasetId", request.getDatasetId(),
+                "columns", columns
+        );
     }
 
+    // ===============================
+    // SAVE COLUMN MAPPING
+    // ===============================
     @PostMapping("/save-mapping")
     public Map<String,String> saveMapping(@RequestBody SaveMappingRequest request){
 
@@ -42,6 +50,10 @@ public class DatasetController {
 
         return Map.of("status","mapping_saved");
     }
+
+    // ===============================
+    // AUTO MAP COLUMNS
+    // ===============================
     @PostMapping("/auto-map")
     public Map<String,Object> autoMap(@RequestBody DatasetRequest request) throws Exception {
 
@@ -53,12 +65,18 @@ public class DatasetController {
                 "mappings", mappings
         );
     }
-    
+
+    // ===============================
+    // PREVIEW DATASET
+    // ===============================
     @PostMapping("/preview")
     public Map<String,Object> preview(@RequestBody PreviewRequest request) throws Exception {
 
         List<Map<String,String>> rows =
-                datasetService.previewDataset(request);
+                datasetService.previewDataset(
+                        request.getDatasetId(),
+                        request.getLimit()
+                );
 
         return Map.of(
                 "status","success",
