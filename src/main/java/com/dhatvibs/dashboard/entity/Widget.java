@@ -4,21 +4,26 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "dashboard_stats")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DashboardStats {
+public class Widget {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String dashboardName;
+    private Long dashboardId;
 
-    private String description;
+    private String title;
 
-    private String previewImage;
+    private String chartType;
+
+    private String metric;
+
+    private String groupBy;
+
+    private Long datasetId;
 
 }

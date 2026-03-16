@@ -7,6 +7,11 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -21,4 +26,8 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /api-docs
-    disable-swagger-default-url: true
+
+azure:
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME}
