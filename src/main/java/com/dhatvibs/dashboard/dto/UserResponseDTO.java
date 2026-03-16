@@ -1,14 +1,39 @@
 package com.dhatvibs.dashboard.dto;
 
+import com.dhatvibs.dashboard.entity.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
-@Data
-public class UserResponse {
+import java.time.LocalDateTime;
 
+@Data
+@Builder
+@Schema(description = "User response object returned to clients")
+public class UserResponseDTO {
+
+    @Schema(example = "1")
     private Long id;
+
+    @Schema(example = "Bindhu Badeti")
     private String fullName;
+
+    @Schema(example = "bindhu@gmail.com")
     private String email;
-    private String role;
+
+    @Schema(example = "ADMIN")
+    private Role role;
+
+    @Schema(example = "profile.jpg")
     private String profilePicture;
-    private boolean twoFactorEnabled;
+
+    @Schema(example = "2026-03-16T10:30:00")
+    private LocalDateTime lastLogin;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private Boolean isActive;
+
 }

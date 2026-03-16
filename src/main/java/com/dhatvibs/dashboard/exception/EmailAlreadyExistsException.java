@@ -1,13 +1,14 @@
 package com.dhatvibs.dashboard.exception;
 
-public class LoginException extends RuntimeException {
+public class EmailAlreadyExistsException extends RuntimeException {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public LoginException(String message) {
+	public EmailAlreadyExistsException(String message) {
         super(message);
     }
+
 }
