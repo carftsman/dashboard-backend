@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dhatvibs.dashboard.dto.DatasetRequest;
 import com.dhatvibs.dashboard.dto.ExtractColumnsRequest;
 import com.dhatvibs.dashboard.dto.PreviewRequest;
 import com.dhatvibs.dashboard.dto.SaveMappingRequest;
@@ -25,14 +26,10 @@ public class DatasetController {
     private final DatasetService datasetService;
 
     @PostMapping("/extract-columns")
-    public Map<String,Object> extractColumns(@RequestBody ExtractColumnsRequest request) throws Exception {
+    public Map<String,Object> extractColumns(@RequestBody DatasetRequest request) throws Exception {
 
-        String[] columns = fileParsingService.extractCsvColumns(request.getFileUrl());
+        return datasetService.extractColumns(request.getDatasetId());
 
-        return Map.of(
-                "status","success",
-                "columns", columns
-        );
     }
 
     @PostMapping("/save-mapping")
@@ -46,16 +43,17 @@ public class DatasetController {
         return Map.of("status","mapping_saved");
     }
     @PostMapping("/auto-map")
-    public Map<String,Object> autoMap(@RequestBody ExtractColumnsRequest request) {
+    public Map<String,Object> autoMap(@RequestBody DatasetRequest request) throws Exception {
 
         Map<String,String> mappings =
-                datasetService.autoMapColumns(request.getFileUrl());
+                datasetService.autoMapColumns(request.getDatasetId());
 
         return Map.of(
                 "status","success",
                 "mappings", mappings
         );
     }
+    
     @PostMapping("/preview")
     public Map<String,Object> preview(@RequestBody PreviewRequest request) throws Exception {
 

@@ -1,5 +1,8 @@
 package com.dhatvibs.dashboard.service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -21,12 +24,17 @@ public class DatasetService {
     private final DatasetRepository datasetRepository;
     private final FileParsingService fileParsingService;
 
+    // ===============================
     // SAVE COLUMN MAPPING
+    // ===============================
     @Transactional
     public void saveMappings(Long datasetId, Map<String,String> mappings) {
 
         Dataset dataset = datasetRepository.findById(datasetId)
                 .orElseThrow(() -> new RuntimeException("Dataset not found"));
+
+        // remove old mappings
+        columnMappingRepository.deleteByDatasetId(datasetId);
 
         List<ColumnMapping> mappingList = new ArrayList<>();
 
@@ -44,51 +52,110 @@ public class DatasetService {
         columnMappingRepository.saveAll(mappingList);
     }
 
+    // ===============================
     // PREVIEW DATASET
+    // ===============================
     public List<Map<String,String>> previewDataset(PreviewRequest request) throws Exception {
 
+        Dataset dataset = datasetRepository.findById(request.getDatasetId())
+                .orElseThrow(() -> new RuntimeException("Dataset not found"));
+
         return fileParsingService.previewCsv(
-                request.getFileUrl(),
+                dataset.getFileUrl(),
                 request.getLimit()
         );
     }
 
+    // ===============================
     // AUTO MAP COLUMNS
-   public Map<String,String> autoMapColumns(String fileUrl) {
+    // ===============================
+    public Map<String,String> autoMapColumns(Long datasetId) throws Exception {
 
-    try {
+        Dataset dataset = datasetRepository.findById(datasetId)
+                .orElseThrow(() -> new RuntimeException("Dataset not found"));
 
-        String[] columns = fileParsingService.extractCsvColumns(fileUrl);
+        URL url = new URL(dataset.getFileUrl());
 
         Map<String,String> mappings = new HashMap<>();
 
-        for(String column : columns){
+        try (BufferedReader reader =
+                     new BufferedReader(new InputStreamReader(url.openStream()))) {
 
-            String normalized = column
-                    .toLowerCase()
-                    .replace(" ", "_");
+            String headerLine = reader.readLine();
 
-            if(normalized.contains("date"))
-                mappings.put("date", column);
+            if(headerLine == null){
+                throw new RuntimeException("CSV file is empty");
+            }
 
-            if(normalized.contains("click"))
-                mappings.put("clicks", column);
+            String[] columns = headerLine.split(",");
 
-            if(normalized.contains("spend"))
-                mappings.put("ad_spend", column);
+            for(String column : columns){
 
-            if(normalized.contains("campaign"))
-                mappings.put("campaign_name", column);
+                String c = column.toLowerCase();
+
+                if(c.contains("date") || c.contains("period"))
+                    mappings.put("date", column);
+
+                else if(c.contains("revenue") || c.contains("value") || c.contains("amount"))
+                    mappings.put("revenue", column);
+
+                else if(c.contains("campaign"))
+                    mappings.put("campaignName", column);
+
+                else if(c.contains("platform"))
+                    mappings.put("platform", column);
+
+                else if(c.contains("click"))
+                    mappings.put("clicks", column);
+
+                else if(c.contains("impression"))
+                    mappings.put("impressions", column);
+
+                else if(c.contains("lead"))
+                    mappings.put("leads", column);
+
+                else if(c.contains("order"))
+                    mappings.put("orders", column);
+            }
         }
 
         return mappings;
-
-    } catch (Exception e) {
-        throw new RuntimeException("Auto column mapping failed", e);
     }
-}
 
+    // ===============================
+    // EXTRACT CSV COLUMNS
+    // ===============================
+    public Map<String, Object> extractColumns(Long datasetId) throws Exception {
+
+        Dataset dataset = datasetRepository.findById(datasetId)
+                .orElseThrow(() -> new RuntimeException("Dataset not found"));
+
+        URL url = new URL(dataset.getFileUrl());
+
+        try (BufferedReader reader =
+                     new BufferedReader(new InputStreamReader(url.openStream()))) {
+
+            String headerLine = reader.readLine();
+
+            if(headerLine == null){
+                throw new RuntimeException("CSV file is empty");
+            }
+
+            String[] columns = Arrays.stream(headerLine.split(","))
+                    .map(String::trim)
+                    .toArray(String[]::new);
+
+            return Map.of(
+                    "datasetId", datasetId,
+                    "status", "success",
+                    "columns", columns
+            );
+        }
+    }
+
+    // ===============================
     // VALIDATE DATASET
+    // ===============================
     public Map<String,Object> validateDataset(Long datasetId){
 
         Map<String,Object> result = new HashMap<>();
@@ -100,14 +167,17 @@ public class DatasetService {
         return result;
     }
 
-    // FIX ERRORS
+    // ===============================
+    // FIX DATA ERRORS
+    // ===============================
     public void fixErrors(Long datasetId){
 
-        // logic to remove duplicates / fix invalid data
         System.out.println("Fixing errors for dataset " + datasetId);
     }
 
+    // ===============================
     // PROCESS DATASET
+    // ===============================
     public void processDataset(Long datasetId){
 
         Dataset dataset = datasetRepository.findById(datasetId)
@@ -118,7 +188,9 @@ public class DatasetService {
         datasetRepository.save(dataset);
     }
 
+    // ===============================
     // GET SINGLE DATASET
+    // ===============================
     public Map<String,Object> getDataset(Long datasetId){
 
         Dataset dataset = datasetRepository.findById(datasetId)
@@ -133,7 +205,9 @@ public class DatasetService {
         return result;
     }
 
+    // ===============================
     // GET ALL DATASETS
+    // ===============================
     public List<Map<String,Object>> getAllDatasets(){
 
         List<Dataset> datasets = datasetRepository.findAll();
@@ -154,7 +228,9 @@ public class DatasetService {
         return result;
     }
 
+    // ===============================
     // DELETE DATASET
+    // ===============================
     public void deleteDataset(Long datasetId){
 
         datasetRepository.deleteById(datasetId);

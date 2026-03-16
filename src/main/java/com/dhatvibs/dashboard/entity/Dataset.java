@@ -28,6 +28,8 @@ public class Dataset {
 
     private String fileName;
 
+    private String fileUrl;   // ADD THIS
+
     private String status;
 
     private LocalDateTime uploadedAt;

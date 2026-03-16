@@ -5,10 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PreviewRequest {
+public class DatasetRequest {
 
     private Long datasetId;
-
-    private int limit;
 
 }
